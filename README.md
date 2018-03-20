@@ -1,10 +1,11 @@
 # Dockerdemo how to use docker file for various application 
 
-
    
- ################################################################
+################################################################
 
   DEMO-1
+
+################################################################
  
  Launch  Docker instance with nginx    expose 80:80 
  
@@ -41,6 +42,8 @@
 ################################################################
 
   DEMO-2 
+
+################################################################
   
 Launch  Docker instance with ssh access      expose 2222:22 
 
@@ -105,7 +108,10 @@ server will login with out password
 
 ################################################################
 
-  DEMO-3
+DEMO-3
+
+################################################################
+
   
 Launch  Docker instance with Apache php  expose 80:80   Mount Filesystem to a container  
 
@@ -134,9 +140,11 @@ root@f56b513bbc73 html]# echo '<?php phpinfo(); ?>' > /var/www/html/index.php
 [root@clusterserver2 centos7-apache24-php]# curl http://192.168.1.21
 
 
-################################################################
+##############################################################
 
 DEMO-4
+
+################################################################
   
 Launch Docker instance   tomcat 9v1  expose  8080 8009 Mount Filesystem.  Make a live deployment to the application without making any changes on the docker
 
@@ -193,8 +201,10 @@ cp /root/dockerdemo/sample.war /opt/tomcat/webapps/
 
  
 ################################################################
+
  DEMO-5
-  
+
+################################################################  
 
 Launch Reverse proxy for Apache tomcat  with MYSQL DB   expose 80,443,  8080,8009, 3306 
 
