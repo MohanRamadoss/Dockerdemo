@@ -1,0 +1,172 @@
+Install of docker 
+
+Lets remove all the unnessary software on the machine  
+
+yum remove docker     docker-client    docker-client-latest  docker-common    docker-latest     docker-latest-logrotate   docker-logrotate  docker-selinux     docker-engine-selinux     docker-engine
+
+now we have to install dependancy software for Docker 
+
+yum install -y yum-utils   device-mapper-persistent-data   lvm2
+
+Let add a docker  repo 
+
+yum-config-manager     --add-repo     https://download.docker.com/linux/centos/docker-ce.repo
+
+
+Enable the yum docker repo on the centos  7.4 server 
+
+yum-config-manager --enable docker-ce-edge
+
+List current docker 
+
+yum list docker-ce --showduplicates | sort -r
+
+
+Install latest docker community edition on the server 
+
+yum install docker-ce  -y 
+
+After install ensure we have enable the services and start the docker 
+
+systemctl start docker
+
+systemctl enable docker
+
+systemctl status docker
+
+
+download https://github.com/MohanRamadoss/docker/tree/master/centos7-nginx 
+
+docker build -t="nginx/centos-nginx" .   
+
+
+Initialize a swarm. The docker engine targeted by this command becomes a manager in the newly created single-node swarm.
+   
+[root@clusterserver1 centos7-nginx]# docker swarm init
+Swarm initialized: current node (d58oju29e07c4u59tnf5e1ysn) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+docker swarm join --token SWMTKN-1-0uppeopy2mg0a8cblugyv6gje9gssnhxtl5qk0sa5nqubojap8-b1rzpxnxxzu0ubt7q9mhtn0dr 192.168.1.20:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+
+In the output from the initialization command (the swarm join token is provided), use the token for joining new worker nodes into the cluster. 
+
+If you accidentally close your terminal and can't remember the token, not to worry, use the following command to retrieve the command with the join-token for either joining a new manager or a new worker.
+
+
+
+OK, now we have a swarm cluster with only one manager node:
+
+[root@clusterserver3 centos7-nginx]# docker swarm join --token SWMTKN-1-0uppeopy2mg0a8cblugyv6gje9gssnhxtl5qk0sa5nqubojap8-b1rzpxnxxzu0ubt7q9mhtn0dr 192.168.1.20:2377
+
+[root@clusterserver4 centos7-nginx]# docker swarm join --token SWMTKN-1-0uppeopy2mg0a8cblugyv6gje9gssnhxtl5qk0sa5nqubojap8-b1rzpxnxxzu0ubt7q9mhtn0dr 192.168.1.20:2377
+
+
+root@clusterserver1 centos7-nginx]# docker node ls
+ID                            HOSTNAME                    STATUS              AVAILABILITY        MANAGER STATUS
+d58oju29e07c4u59tnf5e1ysn *   clusterserver1.rmohan.com   Ready               Active              Leader
+s0vxqeav20pzsnuegh6re5oc7     clusterserver3.rmohan.com   Ready               Active
+k9eaqn6279iozux3edmpu92jx     clusterserver4.rmohan.com   Ready               Active
+[root@clusterserver1 centos7-nginx]#
+
+
+
+Get the Service Up
+
+Hope you're rubbing your hands together like I am at the moment. Yes, finally, we get to the stage of getting the customized Apache image onto the Docker Swarm cluster.
+
+The following steps need to be executed on the Swarm manager node, so let's jump on clusterserver1.
+
+docker service create --name swarm_cluster --replicas=2 -p 80:80 nginx/centos-nginx:latest
+
+
+[root@clusterserver1 centos7-nginx]# docker service update --publish-add 80:80 swarm_cluster
+swarm_cluster
+overall progress: 3 out of 3 tasks
+1/3: running   [==================================================>]
+2/3: running   [==================================================>]
+3/3: running   [==================================================>]
+verify: Service converged
+[root@clusterserver1 centos7-nginx]#
+
+
+
+[root@clusterserver1 centos7-nginx]# docker service inspect swarm_cluster
+
+[root@clusterserver1 centos7-nginx]# docker service ps swarm_cluster
+
+[root@clusterserver1 centos7-nginx]# docker ps --format 'table {{.ID}}  {{.Image}}  {{.Ports}}'
+
+
+Let kill the docker instance in one of the node we can see the docker container is spinned up 
+
+root@clusterserver1 centos7-nginx]# docker service ps swarm_cluster
+ID                  NAME                  IMAGE                       NODE                        DESIRED STATE       CURRENT STATE                  ERROR                         PORTS
+pjmpcau7uylu        swarm_cluster.1       nginx/centos-nginx:latest   clusterserver1.rmohan.com   Ready               Ready less than a second ago
+s7s802sc0dpu         \_ swarm_cluster.1   nginx/centos-nginx:latest   clusterserver3.rmohan.com   Shutdown            Failed 4 seconds ago           "task: non-zero exit (137)"
+47542368ylsw        swarm_cluster.2       nginx/centos-nginx:latest   clusterserver4.rmohan.com   Running             Running 15 minutes ago
+[root@clusterserver1 centos7-nginx]#
+
+
+
+Horizontal Scaling
+
+One of the coolest things ab0ut cluster orchestration is auto-scaling, which is also a great feature of Docker Swarm.
+
+At the moment, I've got 2 replicas hosting "swarm_cluster" service, and I want to add one more, which can be simply done by running the following command on the swarm manager
+
+
+[root@clusterserver1 centos7-nginx]# docker service scale swarm_cluster=6
+swarm_cluster scaled to 6
+overall progress: 6 out of 6 tasks
+1/6: running   [==================================================>]
+2/6: running   [==================================================>]
+3/6: running   [==================================================>]
+4/6: running   [==================================================>]
+5/6: running   [==================================================>]
+6/6: running   [==================================================>]
+verify: Service converged
+[root@clusterserver1 centos7-nginx]#
+
+
+[root@clusterserver1 centos7-nginx]# docker service ps swarm_cluster
+ID                  NAME                IMAGE                       NODE                        DESIRED STATE       CURRENT STATE            ERROR               PORTS
+s7s802sc0dpu        swarm_cluster.1     nginx/centos-nginx:latest   clusterserver3.rmohan.com   Running             Running 13 minutes ago
+47542368ylsw        swarm_cluster.2     nginx/centos-nginx:latest   clusterserver4.rmohan.com   Running             Running 13 minutes ago
+z6c82pw2nd6o        swarm_cluster.3     nginx/centos-nginx:latest   clusterserver1.rmohan.com   Running             Running 13 minutes ago
+wu7i6bdbqfxs        swarm_cluster.4     nginx/centos-nginx:latest   clusterserver1.rmohan.com   Running             Running 8 minutes ago
+vax5efeo3ay1        swarm_cluster.5     nginx/centos-nginx:latest   clusterserver3.rmohan.com   Running             Running 8 minutes ago
+fzoy80qhv219        swarm_cluster.6     nginx/centos-nginx:latest   clusterserver4.rmohan.com   Running             Running 8 minutes ago
+
+
+
+
+Rolling Update
+
+The last thing I want to demonstrate is a rolling update of the service by making a minor change on the index.html file. 
+
+Then I need to rebuild my Docker image and push it to my public DockerHub repository; please refer to the previous sections for the details.
+
+Once I've got my new image available in the remote repository, I run the following command on the swarm manager node clusterserver1 :
+
+docker build -t="nginx/centos-nginxv1" .  
+
+
+docker service update --image nginx/centos-nginxv1:latest swarm_cluster
+
+
+[root@clusterserver1 centos7-nginx]# docker service update --image nginx/centos-nginxv1:latest swarm_cluster
+image nginx/centos-nginxv1:latest could not be accessed on a registry to record
+its digest. Each node will access nginx/centos-nginxv1:latest independently,
+possibly leading to different nodes running different
+versions of the image.
+
+swarm_cluster
+overall progress: 2 out of 2 tasks
+1/2: running   [==================================================>]
+2/2: running   [==================================================>]
+verify: Service converged
+[root@clusterserver1 centos7-nginx]#
+
