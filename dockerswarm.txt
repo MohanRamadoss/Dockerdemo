@@ -181,6 +181,8 @@ ID NAME MODE REPLICAS IMAGE PORTS
 t6vd2agk6wdg swarm_cluster replicated 2/2 nginx/centos-nginxv1:latest *:80->80/tcp
 
 
+Cleaning  docker swarm 
+
 $ docker service rm swarm_cluster
 swarm_cluster
 
