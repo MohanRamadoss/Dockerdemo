@@ -99,6 +99,11 @@ verify: Service converged
 
 [root@clusterserver1 centos7-nginx]# docker ps --format 'table {{.ID}}  {{.Image}}  {{.Ports}}'
 
+[root@clusterserver1 centos7-nginx]# docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE                         PORTS
+t6vd2agk6wdg        swarm_cluster       replicated          2/2                 nginx/centos-nginxv1:latest   *:80->80/tcp
+
+
 
 Let kill the docker instance in one of the node we can see the docker container is spinned up 
 
@@ -170,3 +175,18 @@ overall progress: 2 out of 2 tasks
 verify: Service converged
 [root@clusterserver1 centos7-nginx]#
 
+
+[root@clusterserver1 centos7-nginx]# docker service ls
+ID NAME MODE REPLICAS IMAGE PORTS
+t6vd2agk6wdg swarm_cluster replicated 2/2 nginx/centos-nginxv1:latest *:80->80/tcp
+
+
+$ docker service rm swarm_cluster
+swarm_cluster
+
+$ docker service ls
+ID NAME MODE REPLICAS IMAGE PORTS
+
+$ docker swarm leave --force
+
+Node left the swarm.
