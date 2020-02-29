@@ -2,34 +2,13 @@
 
 ![](images/docker_github.svg)
 
-# Docker Training
 
-    Ondrej Sika <ondrej@ondrejsika.com>
-    https://github.com/ondrejsika/docker-training
 
 My Docker course with code examples.
 
-## About Course
-
-- [Docker Training in Czech Republic](https://ondrej-sika.cz/skoleni/docker?_s=gh-dte)
-- [Docker Training in Europe](https://ondrej-sika.com/training/docker?_s=gh-dte)
-
-### Any Questions?
-
-Write me mail to <ondrej@sika.io>
 
 
-### Related Repositories
 
-#### Traefik
-
-- https://github.com/ondrejsika/traefik-le
-- https://github.com/ondrejsika/traefik-ssl
-
-#### Related courses
-
-- https://github.com/ondrejsika/kubernetes-training-examples
-- https://github.com/ondrejsika/bare-metal-kubernetes
 
 
 ### Lecturer notes
