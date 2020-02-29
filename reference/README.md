@@ -1,4 +1,4 @@
-[Ondrej Sika (sika.io)](https://sika.io) | <ondrej@sika.io> | [go to course ->](#course) | [install docker ->](#install-docker)
+ [go to course ->](#course) | [install docker ->](#install-docker)
 
 ![](images/docker_github.svg)
 
@@ -45,7 +45,7 @@ Also feel free to propose improvements by creating issues.
 
 For sharing links & "secrets".
 
-<https://tlk.io/sika-docker>
+
 
 
 ## What is Docker?
@@ -130,12 +130,10 @@ docker run hello-world
 
 ![](images/test-the-installation.png)
 
-### Remote Docker (over SSH)
 
-You can use remote Docker using SSH. Just export varibale `DOCKER_HOST` with `ssh://root@docker.sikademo.com` and your local Docker clint will be executed on docker.sikademo.com server.
 
 ```
-export DOCKER_HOST=ssh://root@docker.sikademo.com
+
 docker version
 docker info
 ```
@@ -193,33 +191,8 @@ I use [reg](https://github.com/genuinetools/reg) for CLI and Web client. Work on
 
 #### Install Reg
 
-From their release page on Github: <https://github.com/genuinetools/reg/releases>
 
-#### CLI
 
-```
-reg ls <registry>
-```
-
-Example
-
-```
-reg ls reg.istry.cz
-```
-
-#### Web
-
-```
-reg server -r <registry>
-```
-
-Example
-
-```
-reg server -r reg.istry.cz
-```
-
-See <http://127.0.0.1:8080>
 
 
 ## Docker Run
@@ -1611,17 +1584,7 @@ curl `docker-machine ip worker2`
 
 That's it. Do you have any questions? __Let's go for a beer!__
 
-### Ondrej Sika
 
-- email: <ondrej@sika.io>
-- web: <https://sika.io>
-- twitter: [@ondrejsika](https://twitter.com/ondrejsika)
-- linkedin:	[/in/ondrejsika/](https://linkedin.com/in/ondrejsika/)
-- Newsletter, Slack, Facebook & Linkedin Groups: <https://join.sika.io>
-
-_Do you like the course? Write me recommendation on Twitter (with handle `@ondrejsika`) and LinkedIn (add me [/in/ondrejsika](https://www.linkedin.com/in/ondrejsika/) and I'll send you request for recommendation). __Thanks__._
-
-Wanna to go for a beer or do some work together? Just [book me](https://book-me.sika.io) :)
 
 ## Docker FAQ
 
