@@ -1,0 +1,76 @@
+#
+# Source code address
+# https://hub.docker.com/u/cuongtransc/
+#
+# Syntax: https://docs.docker.com/compose/compose-file/
+#
+# Wordpress: https://hub.docker.com/_/wordpress/
+#
+# Dockerfile: https://github.com/cuongtransc/docker-training/blob/master/images/wordpress/Dockerfile
+#
+
+version: "2.4"
+
+x-default: &default
+    networks:
+        - comp_default
+    cpu_shares: 512
+    mem_limit: 100M
+    # memswap_limit: 0           # 0 MB SWAP
+    # privileged: true
+    # restart: always
+    # stdin_open: true
+    # tty: true
+    logging:
+        driver: "json-file"
+        options:
+            max-size: "100M"
+            max-file: "3"
+
+services:
+    wordpress:
+        << : *default
+        image: cuongtransc/wordpress:5.3
+        depends_on:
+            - mariadb
+        environment:
+            - WORDPRESS_DB_HOST=mariadb
+            - WORDPRESS_DB_USER=wordpress
+            - WORDPRESS_DB_PASSWORD=wordpress123
+            - WORDPRESS_DB_NAME=wordpress
+            - WWW_DATA_USERID=1000
+        ports:
+            - "80:80"
+        networks:
+            - back
+            #- traefik_network
+        volumes:
+            - ./wordpress-data/:/var/www/html/
+        hostname: wordpress
+        mem_limit: 512M
+
+    mariadb:
+        << : *default
+        image: mariadb:10.3
+        environment:
+            - MYSQL_ROOT_PASSWORD=devsecret
+            - MYSQL_USER=wordpress
+            - MYSQL_PASSWORD=wordpress123
+            - MYSQL_DATABASE=wordpress
+        #ports:
+            #- "3306:3306"
+        networks:
+            - back
+        volumes:
+            - mariadb-data:/var/lib/mysql/
+        hostname: mariadb
+        mem_limit: 512M
+
+networks:
+    back:
+    #traefik_network:
+        #external: true
+
+volumes:
+    mariadb-data:
+

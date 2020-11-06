@@ -1,0 +1,33 @@
+#
+# Source code address
+# https://hub.docker.com/u/cuongtransc/
+#
+# Default configure
+# username: coc
+# password: hello^^
+#
+# syntax: https://docs.docker.com/compose/yml/
+#
+
+version: "2"
+
+services:
+    mongodb:
+        image: mongo:3.6
+        ports:
+            - "27017:27017"
+        volumes:
+            - ./mongodb-data/:/data/db
+        # hostname: mongodb
+        # domainname: devopsz.com
+        cpu_shares: 512
+        mem_limit: 1G
+        # privileged: true
+        # restart: always
+        # stdin_open: true
+        # tty: true
+        logging:
+          driver: "json-file"
+          options:
+              max-size: "100M"
+              max-file: "3"

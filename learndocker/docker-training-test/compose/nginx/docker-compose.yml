@@ -1,0 +1,38 @@
+#
+# Source code address
+# https://hub.docker.com/u/cuongtransc/
+#
+# Syntax: https://docs.docker.com/compose/compose-file/
+#
+
+version: "2"
+
+services:
+    nginx:
+        image: cuongtransc/nginx:1.10.3
+        ports:
+            - "80:80"
+            - "443:443"
+        networks:
+            - nginx-back
+        volumes:
+            - ./nginx-config/:/etc/nginx/
+        container_name: nginx
+        hostname: nginx
+        #domainname: coclab.lan
+        cpu_shares: 1024
+        mem_limit: 512M
+        #privileged: true
+        #restart: always
+        #stdin_open: true
+        tty: true
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "100M"
+                max-file: "3"
+
+networks:
+    nginx-back:
+        #external: true
+

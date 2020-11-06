@@ -1,0 +1,41 @@
+#
+# Source code address
+# https://hub.docker.com/u/cuongtransc/
+#
+# Syntax: https://docs.docker.com/compose/compose-file/
+#
+# Source: https://github.com/cuongtransc/swagger-ui
+#
+
+version: "2"
+
+services:
+    swagger-ui:
+        image: cuongtransc/swagger-ui:2.2.10
+        ports:
+            - "8080:8080"
+        networks:
+            - comp_default
+        volumes:
+            - ./swagger-data/swagger.json:/usr/share/nginx/html/swagger.json
+        environment:
+            - VALIDATOR_URL=null
+            # - HTPASSWD=
+        hostname: swagger-ui
+        domainname: devopsz.com
+        cpu_shares: 512
+        mem_limit: 512M
+        # privileged: true
+        # restart: always           # other choice: on-failure:3
+        # stdin_open: true
+        # tty: true
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "100M"
+                max-file: "3"
+
+networks:
+    comp_default:
+        external: true
+
