@@ -1,4 +1,3 @@
-[root@docker1 compose]# cat docker-compose.yaml
  version: '3'
  services:
    ghost:
